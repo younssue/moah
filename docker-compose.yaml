@@ -15,12 +15,12 @@ services:
       - app-network
 
   db:
-    image: mysql:8.0
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mydb-data:/var/lib/mysql
     networks:

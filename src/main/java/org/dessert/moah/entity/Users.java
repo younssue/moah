@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.dessert.moah.entity.common.BaseTime;
+import org.dessert.moah.entity.type.UserRoleEnum;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "users")
 public class Users extends BaseTime {

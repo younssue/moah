@@ -1,4 +1,4 @@
-package org.dessert.moah.entity;
+package org.dessert.moah.entity.type;
 
 public enum UserRoleEnum {
     USER(Authority.USER),  // 사용자 권한

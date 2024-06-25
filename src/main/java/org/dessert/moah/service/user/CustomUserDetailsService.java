@@ -1,9 +1,9 @@
-package org.dessert.moah.service;
+package org.dessert.moah.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.dto.CustomUserDetails;
-import org.dessert.moah.entity.Users;
-import org.dessert.moah.repository.UserRepository;
+import org.dessert.moah.entity.user.Users;
+import org.dessert.moah.repository.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

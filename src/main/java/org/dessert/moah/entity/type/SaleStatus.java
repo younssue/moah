@@ -6,16 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SaleStatus {
-
-    /*
-    주문완료, 배송중, 배송완료, 주문취소, 반품신청, 반품완료
-    * */
-
-    ORDER_COMPLETED,
-    ORDER_CANCELLATION,
-    BEING_DELIVERED,
-    DELIVERY_COMPLETED,
-    REQUEST_FOR_RETURN,
-    RETURN_COMPLETED
-
+    ON_SALE,
+    OUT_OF_STOCK
 }

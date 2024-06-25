@@ -4,9 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.dessert.moah.dto.CustomUserDetails;
 import org.dessert.moah.entity.type.UserRoleEnum;
-import org.dessert.moah.entity.Users;
+import org.dessert.moah.entity.user.Users;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,12 +15,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
-    public JWTFilter(JWTUtil jwtUtil){
-        this.jwtUtil = jwtUtil;
-    }
+//    public JWTFilter(JWTUtil jwtUtil){
+//        this.jwtUtil = jwtUtil;
+//    }
 
 
     @Override

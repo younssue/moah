@@ -1,4 +1,4 @@
-package org.dessert.moah.entity;
+package org.dessert.moah.entity.user;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -17,6 +17,7 @@ public class Users extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false)
@@ -30,6 +31,9 @@ public class Users extends BaseTime {
 
     @Column(nullable = false, name = "phone_number")
     private String phoneNumber;
+
+    @Column(nullable = false)
+    private String address;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)

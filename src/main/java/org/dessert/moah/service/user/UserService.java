@@ -1,4 +1,4 @@
-package org.dessert.moah.service;
+package org.dessert.moah.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.base.dto.CommonResponseDto;
@@ -6,9 +6,9 @@ import org.dessert.moah.base.service.CommonService;
 import org.dessert.moah.base.type.SuccessCode;
 import org.dessert.moah.dto.SignupRequestDto;
 import org.dessert.moah.entity.type.UserRoleEnum;
-import org.dessert.moah.entity.Users;
+import org.dessert.moah.entity.user.Users;
 //import org.dessert.moah.jwt.JwtUtil;
-import org.dessert.moah.repository.UserRepository;
+import org.dessert.moah.repository.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -20,8 +20,6 @@ public class JWTUtil {
 
 
 
-
-
     public JWTUtil(@Value("${jwt.secret.key}")String secret) {
 
 //

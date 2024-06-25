@@ -1,21 +1,13 @@
 package org.dessert.moah.controller;
 
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.base.dto.CommonResponseDto;
 import org.dessert.moah.base.dto.ResultDto;
-import org.dessert.moah.dto.ExampleDto;
-import org.dessert.moah.dto.LoginRequestDto;
-import org.dessert.moah.dto.LoginResponseDto;
 import org.dessert.moah.dto.SignupRequestDto;
-import org.dessert.moah.service.UserService;
-import org.springframework.http.HttpStatus;
+import org.dessert.moah.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor

@@ -12,6 +12,10 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+#        dialect: org.hibernate.dialect.MySQLDialect
   profiles:
     active: docker
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}

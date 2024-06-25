@@ -1,5 +1,6 @@
 package org.dessert.moah.config;
 
+import lombok.RequiredArgsConstructor;
 import org.dessert.moah.jwt.JWTFilter;
 import org.dessert.moah.jwt.JWTUtil;
 import org.dessert.moah.jwt.LoginFilter;
@@ -16,17 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
 
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.jwtUtil = jwtUtil;
-    }
 
     //AuthenticationManager Bean 등록
     @Bean

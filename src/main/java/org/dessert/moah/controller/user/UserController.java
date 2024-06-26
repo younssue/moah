@@ -1,10 +1,11 @@
-package org.dessert.moah.controller;
+package org.dessert.moah.controller.user;
 
 
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.base.dto.CommonResponseDto;
 import org.dessert.moah.base.dto.ResultDto;
-import org.dessert.moah.dto.SignupRequestDto;
+import org.dessert.moah.dto.user.SignupRequestDto;
+import org.dessert.moah.dto.user.UpdateUserInfoRequestDto;
 import org.dessert.moah.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,15 @@ public class UserController {
     @GetMapping("/user/admin")
     public String amdinP(){
         return "admin controller";
+    }
+
+
+    @PutMapping("/user/update/{userId}")
+    public ResponseEntity<ResultDto<Void>> updateUserInfo(@PathVariable Long userId,@RequestBody UpdateUserInfoRequestDto updateUserInfoRequestDto){
+        CommonResponseDto<Object> commonResponseDto = userService.updateUserInfo(userId,updateUserInfoRequestDto);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
     }
 
 }

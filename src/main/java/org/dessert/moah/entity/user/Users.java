@@ -41,11 +41,20 @@ public class Users extends BaseTime {
 
 
     @Builder
-    public Users(String name, String password, String email, String phoneNumber, UserRoleEnum role) {
+    public Users(String name, String password, String email, String phoneNumber, UserRoleEnum role, String address) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
+        this.address = address;
+
+    }
+
+
+
+    public void UpdateUserInfo(String phoneNumber, String address){
+        this.phoneNumber = phoneNumber;
+        this.address = address;
     }
 }

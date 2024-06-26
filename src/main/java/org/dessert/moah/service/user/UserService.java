@@ -12,6 +12,7 @@ import org.dessert.moah.entity.type.UserRoleEnum;
 import org.dessert.moah.entity.user.Users;
 //import org.dessert.moah.jwt.JwtUtil;
 import org.dessert.moah.exception.NotFoundException;
+import org.dessert.moah.jwt.JWTUtil;
 import org.dessert.moah.repository.user.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,6 +27,7 @@ public class UserService {
     private final CommonService commonService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JWTUtil jwtUtil;
 
 
 
@@ -64,14 +66,24 @@ public class UserService {
     }
 
     @Transactional
-    public CommonResponseDto<Object> updateUserInfo(Long userId, UpdateUserInfoRequestDto updateUserInfoRequestDto) {
+    public CommonResponseDto<Object> updateUserInfo(String accessToken, UpdateUserInfoRequestDto updateUserInfoRequestDto) {
 
+/*        // Bearer prefix 제거
+        String token = accessToken.replace("Bearer ", "");
+
+        //TODO: email 로 변경
+        String name = jwtUtil.getUsername(accessToken);
+        Users user = userRepository.findByName(name)
+                                   .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND))*/
+
+
+//        Long userId = accessToken.get
         // 수정하려고 하는 유저가 맞는지 확인
-        Users user = userRepository.findById(userId)
+/*        Users user = userRepository.findById(userId)
                                    .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         // 수정 정보 저장
-        user.UpdateUserInfo(updateUserInfoRequestDto.getPhoneNumber(), updateUserInfoRequestDto.getAddress());
+        user.UpdateUserInfo(updateUserInfoRequestDto.getPhoneNumber(), updateUserInfoRequestDto.getAddress());*/
 
 
         return commonService.successResponse(SuccessCode.USER_UPDATE_INFO.getDescription(), HttpStatus.OK, null);

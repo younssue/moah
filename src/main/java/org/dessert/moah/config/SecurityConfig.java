@@ -59,7 +59,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/moah/*", "/moah/user/signup")
+                        .requestMatchers("/login", "/moah/*", "/moah/user/signup", "/moah/item/**")
                         .permitAll()
                         .requestMatchers("/moah/user/admin")
                         .hasAnyAuthority("ADMIN")

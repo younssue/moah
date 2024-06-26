@@ -3,7 +3,7 @@ package org.dessert.moah.controller;
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.base.dto.CommonResponseDto;
 import org.dessert.moah.base.dto.ResultDto;
-import org.dessert.moah.dto.ExampleDto;
+import org.dessert.moah.dto.item.ItemResponseDto;
 import org.dessert.moah.service.ExampleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +27,10 @@ public class ExampleController {
 
     // 반환값이 있을 때
     @GetMapping("/example")
-    public ResponseEntity<ResultDto<ExampleDto>> exampleGet(){
+    public ResponseEntity<ResultDto<ItemResponseDto>> exampleGet(){
         CommonResponseDto<Object> commonResponseDto = exampleService.exampleGet();
-        ResultDto<ExampleDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-        resultDto.setData((ExampleDto) commonResponseDto.getData());
+        ResultDto<ItemResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        resultDto.setData((ItemResponseDto) commonResponseDto.getData());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
     }

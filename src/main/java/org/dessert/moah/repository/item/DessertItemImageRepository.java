@@ -1,4 +1,4 @@
-package org.dessert.moah.repository.Item;
+package org.dessert.moah.repository.item;
 
 import org.dessert.moah.entity.Item.DessertItemImage;
 import org.springframework.data.jpa.repository.JpaRepository;

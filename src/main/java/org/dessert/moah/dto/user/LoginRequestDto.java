@@ -1,4 +1,4 @@
-package org.dessert.moah.dto;
+package org.dessert.moah.dto.user;
 
 import lombok.Builder;
 import lombok.Getter;

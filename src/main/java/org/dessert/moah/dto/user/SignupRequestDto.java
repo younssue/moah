@@ -1,4 +1,4 @@
-package org.dessert.moah.dto;
+package org.dessert.moah.dto.user;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +10,5 @@ public class SignupRequestDto {
     private String password;
     private String email;
     private String phoneNumber;
-//    private boolean admin = false;
-//    private String adminToken = "";
+    private String address;
 }

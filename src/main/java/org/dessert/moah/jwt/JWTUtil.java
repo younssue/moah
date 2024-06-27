@@ -38,7 +38,7 @@ public class JWTUtil {
                    .build()
                    .parseSignedClaims(token)
                    .getPayload()
-                   .get("username", String.class);
+                   .get("email", String.class);
     }
 
     public String getRole(String token) {
@@ -72,21 +72,21 @@ public class JWTUtil {
                    .get("category", String.class);
     }
 
-    public String getEmail(String token) {
+//    public String getEmail(String token) {
+//
+//        return Jwts.parser()
+//                   .verifyWith(secretKey)
+//                   .build()
+//                   .parseSignedClaims(token)
+//                   .getPayload()
+//                   .get("email", String.class);
+//    }
 
-        return Jwts.parser()
-                   .verifyWith(secretKey)
-                   .build()
-                   .parseSignedClaims(token)
-                   .getPayload()
-                   .get("email", String.class);
-    }
-
-    public String createJwt(String category, String username, String role,String email, Long expiredMs) {
+    public String createJwt(String category, String role,String email, Long expiredMs) {
 
         return Jwts.builder()
                    .claim("category", category)
-                   .claim("username", username)
+//                   .claim("username", username)
                    .claim("role", role)
                    .claim("email", email)
                    .issuedAt(new Date(System.currentTimeMillis()))

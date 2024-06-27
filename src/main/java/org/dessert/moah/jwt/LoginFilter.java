@@ -37,11 +37,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
         //클라이언트 요청에서 username, password 추출
-        String username = obtainUsername(request);
+        String email = obtainUsername(request);
         String password = obtainPassword(request);
 
         //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
 
         //token에 담은 검증을 위한 AuthenticationManager로 전달
         return authenticationManager.authenticate(authToken);
@@ -68,7 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //유저 정보
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        String username = authentication.getName();
+//        String username = authentication.getName();
 
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -79,11 +79,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String email = customUserDetails.getEmail();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, email,600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, email,86400000L);
+        String access = jwtUtil.createJwt("access",  role, email,600000L);
+        String refresh = jwtUtil.createJwt("refresh",  role, email,86400000L);
 
         //Refresh 토큰 저장
-        addRefreshToken(username, refresh, 86400000L);
+        addRefreshToken(email, refresh, 86400000L);
 
         //응답 설정
         response.setHeader("access", access);
@@ -111,12 +111,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     // Refresh token 저장
-    private void addRefreshToken(String username, String refresh, Long expiredMs) {
+    private void addRefreshToken(String email, String refresh, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
         Session session = new Session();
-        session.setUsername(username);
+        session.setEmail(email);
         session.setRefreshToken(refresh);
         session.setExpiration(date.toString());
 

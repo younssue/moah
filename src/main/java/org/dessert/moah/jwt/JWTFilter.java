@@ -75,6 +75,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 다중 토큰
         // 헤더에서 access키에 담긴 토큰을 꺼냄
+
         String accessToken = request.getHeader("access");
 
         // 토큰이 없다면 다음 필터로 넘김
@@ -117,11 +118,15 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
         UserRoleEnum userRoleEnum = UserRoleEnum.valueOf(role);
+        String email = jwtUtil.getEmail(accessToken);
+
 
         Users user = new Users();
         user.setName(username);
         user.setRole(userRoleEnum);
+        user.setEmail(email);
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
+
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         SecurityContextHolder.getContext()

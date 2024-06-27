@@ -5,7 +5,7 @@ import org.dessert.moah.base.dto.CommonResponseDto;
 import org.dessert.moah.base.service.CommonService;
 import org.dessert.moah.base.type.ErrorCode;
 import org.dessert.moah.base.type.SuccessCode;
-import org.dessert.moah.controller.user.UserController;
+import org.dessert.moah.dto.CustomUserDetails;
 import org.dessert.moah.dto.user.SignupRequestDto;
 import org.dessert.moah.dto.user.UpdateUserInfoRequestDto;
 import org.dessert.moah.entity.type.UserRoleEnum;
@@ -30,7 +30,7 @@ public class UserService {
     private final JWTUtil jwtUtil;
 
 
-
+    @Transactional
     public CommonResponseDto<Object> signup(SignupRequestDto requestDto) {
         String username = requestDto.getName();
         String password = bCryptPasswordEncoder.encode(requestDto.getPassword());
@@ -65,27 +65,19 @@ public class UserService {
         return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
+
     @Transactional
-    public CommonResponseDto<Object> updateUserInfo(String accessToken, UpdateUserInfoRequestDto updateUserInfoRequestDto) {
+    public CommonResponseDto<Object> updateUserInfo(CustomUserDetails customUserDetails, UpdateUserInfoRequestDto updateUserInfoRequestDto) {
 
-/*        // Bearer prefix 제거
-        String token = accessToken.replace("Bearer ", "");
-
-        //TODO: email 로 변경
-        String name = jwtUtil.getUsername(accessToken);
-        Users user = userRepository.findByName(name)
-                                   .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND))*/
-
-
-//        Long userId = accessToken.get
-        // 수정하려고 하는 유저가 맞는지 확인
-/*        Users user = userRepository.findById(userId)
+        String email = customUserDetails.getEmail();
+        Users user = userRepository.findByEmail(email)
                                    .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        // 수정 정보 저장
-        user.UpdateUserInfo(updateUserInfoRequestDto.getPhoneNumber(), updateUserInfoRequestDto.getAddress());*/
+
+        user.UpdateUserInfo(updateUserInfoRequestDto.getPhoneNumber(), updateUserInfoRequestDto.getAddress());
 
 
         return commonService.successResponse(SuccessCode.USER_UPDATE_INFO.getDescription(), HttpStatus.OK, null);
     }
+
 }

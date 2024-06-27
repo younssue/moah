@@ -67,6 +67,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.addHeader("Authorization", "Bearer " + token);*/
 
         //유저 정보
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         String username = authentication.getName();
 
 
@@ -75,9 +76,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+        String email = customUserDetails.getEmail();
+
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String access = jwtUtil.createJwt("access", username, role, email,600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, role, email,86400000L);
 
         //Refresh 토큰 저장
         addRefreshToken(username, refresh, 86400000L);

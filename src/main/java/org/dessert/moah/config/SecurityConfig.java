@@ -68,6 +68,7 @@ public class SecurityConfig {
                         .requestMatchers("/reissue").permitAll()
                         .requestMatchers("/moah/user/admin")
                         .hasAnyAuthority("ADMIN")
+                        .requestMatchers("/moah/user/update").authenticated()
                         .anyRequest()
                         .authenticated());
 

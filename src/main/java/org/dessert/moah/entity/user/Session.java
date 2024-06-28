@@ -18,7 +18,7 @@ public class Session {
     private Long id;
 
     // TODO: email로 변경필요
-    private String username;
+    private String email;
     @Column(name = "refresh_token")
     private String refreshToken;
     // 만료 시간

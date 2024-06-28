@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/moah")
+@RequestMapping("/moah/item/list")
 public class ItemController {
     private final ItemService itemService;
 
     // 전체 리스트 조회
-    @GetMapping("/item/list")
+    @GetMapping("")
     public ResponseEntity<ResultDto<ItemResponseListDto>> getItemList(){
         CommonResponseDto<Object> commonResponseDto = itemService.getItemList();
         ResultDto<ItemResponseListDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
@@ -25,7 +25,7 @@ public class ItemController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
     }
 
-    @GetMapping("/item/list/{dessertId}")
+    @GetMapping("/{dessertId}")
     public ResponseEntity<ResultDto<ItemResponseDto>> getItemDetail(@PathVariable Long dessertId){
         CommonResponseDto<Object> commonResponseDto = itemService.getItemDetail(dessertId);
         ResultDto<ItemResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());

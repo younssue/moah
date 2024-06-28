@@ -37,4 +37,13 @@ public class OrderItem {
         this.orders = orders;
         this.dessertItem = dessertItem;
     }
+
+    // 주문 가격 * 주문 수량 = 해당 상품을 주문한 총 가격
+    public int getTotalPrice(){
+        return orderPrice*count;
+    }
+
+    public void setOrders(Orders orders) {
+        this.orders = orders;
+    }
 }

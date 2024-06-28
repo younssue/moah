@@ -8,7 +8,12 @@ import lombok.Getter;
 public enum ErrorCode {
 
     EXAMPLE_FAIL("에러 예시 코드 입니다."),
-    USER_NOT_FOUND("유저 정보를 찾을 수 없습니다");
+    // 회원
+    USER_NOT_FOUND("유저 정보를 찾을 수 없습니다"),
+    // 상품
+    ITEM_NOT_FOUND("상품 정보를 찾을 수 없습니다"),
+    // 재고
+    OUT_OF_STOCK("재고가 부족합니다");
 
     private final String description;
 }

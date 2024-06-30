@@ -43,4 +43,9 @@ public class Stock {
         this.stockAmount -= amount;
         this.sellAmount += amount;
     }
+
+    public void increaseStock(int amount) {
+        this.stockAmount += amount;
+        this.sellAmount -= amount;
+    }
 }

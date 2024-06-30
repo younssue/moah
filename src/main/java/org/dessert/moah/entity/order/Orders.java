@@ -23,7 +23,7 @@ public class Orders {
     private Long id;
 
 
-    @Column(name = "order_status")
+    @Column(name = "order_status", nullable = false, length = 20)
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 

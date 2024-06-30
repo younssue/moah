@@ -47,4 +47,15 @@ public class OrderController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
     }
+
+    @PutMapping("/{orderId}/cancel")
+    public ResponseEntity<ResultDto<Void>> cancelOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long orderId) {
+        CommonResponseDto<Object> commonResponseDto = orderService.cancelOrder(customUserDetails, orderId);
+        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
+    }
+
+
 }

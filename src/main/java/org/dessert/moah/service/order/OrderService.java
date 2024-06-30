@@ -16,6 +16,7 @@ import org.dessert.moah.entity.order.OrderItem;
 import org.dessert.moah.entity.order.Orders;
 import org.dessert.moah.entity.type.OrderStatus;
 import org.dessert.moah.entity.user.Users;
+import org.dessert.moah.exception.BadRequestException;
 import org.dessert.moah.exception.NotFoundException;
 import org.dessert.moah.exception.OutOfStockException;
 import org.dessert.moah.repository.item.DessertItemRepository;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,15 +131,45 @@ public class OrderService {
 
         for (Orders order : ordersList) {
             if (order.getOrderStatus() == OrderStatus.ORDER_COMPLETED) {
-                if (order.getOrderDate().plusDays(1).isBefore(now)) {
+                if (order.getOrderDate()
+                         .plusDays(1)
+                         .isBefore(now)) {
                     orderRepository.updateOrderStatus(order.getId(), OrderStatus.BEING_DELIVERED);
                 }
             } else if (order.getOrderStatus() == OrderStatus.BEING_DELIVERED) {
-                if (order.getOrderDate().plusDays(2).isBefore(now)) {
+                if (order.getOrderDate()
+                         .plusDays(2)
+                         .isBefore(now)) {
                     orderRepository.updateOrderStatus(order.getId(), OrderStatus.DELIVERY_COMPLETED);
                 }
             }
         }
     }
 
+    @Transactional
+    public CommonResponseDto<Object> cancelOrder(CustomUserDetails customUserDetails, Long orderId) {
+        String email = customUserDetails.getEmail();
+        Users user = userRepository.findByEmail(email)
+                                   .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        Orders order = orderRepository.findByIdAndUsers(orderId, user)
+                                      .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 주문 상태가 배송 중이 되기 이전까지만 취소 가능
+        if (order.getOrderStatus() != OrderStatus.ORDER_COMPLETED) {
+            throw new BadRequestException(ErrorCode.INVALID_ORDER_STATUS);
+        }
+
+        // 재고 복구
+        for (OrderItem orderItem : order.getOrderItems()) {
+            Stock stock = orderItem.getDessertItem()
+                                   .getStock();
+            stock.increaseStock(orderItem.getCount());
+        }
+
+        // 주문 상태를 취소 완료로 변경
+        orderRepository.updateOrderStatus(order.getId(), OrderStatus.ORDER_CANCELLED);
+
+        return commonService.successResponse(SuccessCode.ORDER_CANCELLED.getDescription(), HttpStatus.OK, null);
+    }
 }

@@ -15,5 +15,6 @@ public class ItemResponseDto {
     private SaleStatus saleStatus;
     private DessertType dessertType;
     private StockDto stock;
+    private String dessertItemImg;
 }
 

@@ -17,12 +17,12 @@ import static org.apache.naming.ResourceRef.AUTH;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/moah/user")
+@RequestMapping("/moah/users")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping
     public ResponseEntity<ResultDto<Void>> signup(@RequestBody SignupRequestDto signUpRequestDto) {
         CommonResponseDto<Object> commonResponseDto = userService.signup(signUpRequestDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
@@ -33,7 +33,7 @@ public class UserController {
 
 
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<ResultDto<Void>> updateUserInfo(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UpdateUserInfoRequestDto updateUserInfoRequestDto) {
 
         CommonResponseDto<Object> commonResponseDto = userService.updateUserInfo(customUserDetails, updateUserInfoRequestDto);

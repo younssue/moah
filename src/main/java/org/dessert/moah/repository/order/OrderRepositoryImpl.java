@@ -26,7 +26,6 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     @Override
-    @Transactional
     public void updateOrderStatus(Long orderId, OrderStatus status) {
         QOrders orders = QOrders.orders;
         queryFactory.update(orders)

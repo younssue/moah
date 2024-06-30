@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/moah/order")
+@RequestMapping("/moah/orders")
 public class OrderController {
     private final OrderService orderService;
 
     // 주문하기
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<ResultDto<Void>> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OrderRequestDto orderRequestDto) {
         CommonResponseDto<Object> commonResponseDto = orderService.createOrder(customUserDetails, orderRequestDto);
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
@@ -37,7 +37,7 @@ public class OrderController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }*/
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ResultDto<OrderResponseList>> getOrders(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam int page,
                                                                   @RequestParam int size) {
         CommonResponseDto<Object> commonResponseDto = orderService.getOrders(customUserDetails, page, size);

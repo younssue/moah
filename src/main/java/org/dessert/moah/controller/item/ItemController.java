@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/moah/item/list")
+@RequestMapping("/moah/items")
 public class ItemController {
     private final ItemService itemService;
 
     // 전체 리스트 조회
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<ResultDto<ItemResponseListDto>> getItemList(){
         CommonResponseDto<Object> commonResponseDto = itemService.getItemList();
         ResultDto<ItemResponseListDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());

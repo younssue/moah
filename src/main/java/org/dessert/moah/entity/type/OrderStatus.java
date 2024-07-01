@@ -7,15 +7,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum OrderStatus {
 
-    /*
-    주문완료, 배송중, 배송완료, 주문취소, 반품신청, 반품완료
-    * */
 
-    ORDER_COMPLETED,
-    ORDER_CANCEL,
-    BEING_DELIVERED,
-    DELIVERY_COMPLETED,
-    REQUEST_FOR_RETURN,
-    RETURN_COMPLETED
+    ORDER_COMPLETED("주문 완료"),
+    ORDER_CANCELLED("주문 취소"),
+    BEING_DELIVERED("배송 중"),
+    DELIVERY_COMPLETED("배송 완료"),
+    REQUEST_FOR_RETURN("반품 신청"),
+    RETURN_COMPLETED("반품 완료");
 
+    private final String description;
 }

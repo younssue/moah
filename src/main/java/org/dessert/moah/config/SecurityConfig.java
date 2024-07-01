@@ -63,12 +63,11 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/moah/*", "/moah/user/signup", "/moah/item/**")
+                        .requestMatchers("/login", "/moah/*", "/moah/users", "/moah/items/**")
                         .permitAll()
                         .requestMatchers("/reissue").permitAll()
-                        .requestMatchers("/moah/user/admin")
+                        .requestMatchers("/moah/users/admin")
                         .hasAnyAuthority("ADMIN")
-                        .requestMatchers("/moah/user/update").authenticated()
                         .anyRequest()
                         .authenticated());
 

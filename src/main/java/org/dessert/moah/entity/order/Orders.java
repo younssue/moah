@@ -23,7 +23,7 @@ public class Orders {
     private Long id;
 
 
-    @Column(name = "order_status")
+    @Column(name = "order_status", nullable = false, length = 20)
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
@@ -40,9 +40,24 @@ public class Orders {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Builder
-    public Orders(OrderStatus orderStatus, LocalDateTime orderDate, Users users) {
+    public Orders(OrderStatus orderStatus, LocalDateTime orderDate, Users users, List<OrderItem> orderItems) {
         this.orderStatus = orderStatus;
         this.orderDate = orderDate;
         this.users = users;
+        this.orderItems = new ArrayList<>();
+    }
+
+    // 전체 품목의 주문 금액
+    public int getTotalPrice(){
+        int totalPrice = 0;
+        for(OrderItem orderItem : orderItems){
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrders(this); // 양방향 연관관계 설정
     }
 }

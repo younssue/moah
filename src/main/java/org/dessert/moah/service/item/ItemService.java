@@ -48,6 +48,7 @@ public class ItemService {
                                                              .saleStatus(dessertItem.getSaleStatus())
                                                              .dessertName(dessertItem.getDessertName())
                                                              .contents(dessertItem.getContents())
+                                                             .dessertItemImg(mainImgPath)
                                                              .build();
 
             itemResponseDtos.add(itemResponseDto);
@@ -73,6 +74,10 @@ public class ItemService {
                                                         .getId())
                                     .build();
 
+        String mainImgPath = dessertItem.getDessertItemImages()
+                                        .get(0)
+                                        .getImg_url();
+
         ItemResponseDto itemResponseDto = ItemResponseDto.builder()
                                                          .stock(stockDto)
                                                          .contents(dessertItem.getContents())
@@ -81,6 +86,7 @@ public class ItemService {
                                                          .saleStatus(dessertItem.getSaleStatus())
                                                          .dessertType(dessertItem.getDessertType())
                                                          .dessert_id(dessertItem.getId())
+                                                         .dessertItemImg(mainImgPath)
                                                          .build();
         return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, itemResponseDto);
     }

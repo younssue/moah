@@ -87,6 +87,7 @@ public class OrderService {
         return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, null);
     }
 
+    // 유저의 전체 주문 내역
     public CommonResponseDto<Object> getOrders(CustomUserDetails customUserDetails, int page, int size) {
         String email = customUserDetails.getEmail();
         Users user = userRepository.findByEmail(email)
@@ -121,6 +122,37 @@ public class OrderService {
                                                                   .orderResponseDtoList(orderResponseDtoList)
                                                                   .build();
         return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, orderResponseListDto);
+    }
+
+    // 단일 주문 내역
+    public CommonResponseDto<Object> getOrder(CustomUserDetails customUserDetails, Long orderId) {
+        String email = customUserDetails.getEmail();
+        Users user = userRepository.findByEmail(email)
+                                   .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        Orders order = orderRepository.findByIdAndUsers(orderId, user)
+                                      .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+
+        List<OrderItemDto> orderItemDtoList = order.getOrderItems()
+                                                   .stream()
+                                                   .map(item -> OrderItemDto.builder()
+                                                                            .orderItemId(item.getId())
+                                                                            .dessertId(item.getDessertItem().getId())
+                                                                            .dessertName(item.getDessertItem().getDessertName())
+                                                                            .count(item.getCount())
+                                                                            .price(item.getOrderPrice())
+                                                                            .build())
+                                                   .collect(Collectors.toList());
+
+        OrderResponseDto orderResponseDto = OrderResponseDto.builder()
+                                                            .orderId(order.getId())
+                                                            .orderStatus(order.getOrderStatus().getDescription())
+                                                            .orderDate(order.getOrderDate())
+                                                            .totalPrice(order.getTotalPrice())
+                                                            .orderItemDtoList(orderItemDtoList)
+                                                            .build();
+
+        return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, orderResponseDto);
     }
 
     // 주문 상태 업데이트 (매일 자정에 실행)

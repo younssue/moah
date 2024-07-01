@@ -5,6 +5,7 @@ import org.dessert.moah.base.dto.CommonResponseDto;
 import org.dessert.moah.base.dto.ResultDto;
 import org.dessert.moah.dto.CustomUserDetails;
 import org.dessert.moah.dto.order.OrderRequestDto;
+import org.dessert.moah.dto.order.OrderResponseDto;
 import org.dessert.moah.dto.order.OrderResponseList;
 import org.dessert.moah.service.order.OrderService;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ public class OrderController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }*/
 
+    // 주문 전체 조회
     @GetMapping
     public ResponseEntity<ResultDto<OrderResponseList>> getOrders(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam int page,
                                                                   @RequestParam int size) {
@@ -48,6 +50,19 @@ public class OrderController {
                              .body(resultDto);
     }
 
+    // 주문 상세 조회
+    @GetMapping("/{orderId}")
+    public ResponseEntity<ResultDto<OrderResponseDto>> getOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long orderId) {
+        CommonResponseDto<Object> commonResponseDto = orderService.getOrder(customUserDetails, orderId);
+        ResultDto<OrderResponseDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+        resultDto.setData((OrderResponseDto) commonResponseDto.getData());
+
+        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+                             .body(resultDto);
+    }
+
+
+    // 주문 취소
     @PutMapping("/{orderId}/cancel")
     public ResponseEntity<ResultDto<Void>> cancelOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long orderId) {
         CommonResponseDto<Object> commonResponseDto = orderService.cancelOrder(customUserDetails, orderId);
@@ -57,6 +72,7 @@ public class OrderController {
                              .body(resultDto);
     }
 
+    // 반품
     @PutMapping("/{orderId}/return")
     public ResponseEntity<ResultDto<Void>> requestReturn(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long orderId) {
         CommonResponseDto<Object> commonResponseDto = orderService.requestReturn(customUserDetails, orderId);
@@ -66,5 +82,7 @@ public class OrderController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
     }
+
+
 
 }

@@ -123,6 +123,7 @@ public class OrderService {
         return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, orderResponseListDto);
     }
 
+    // 주문 상태 업데이트 (매일 자정에 실행)
     @Transactional
     @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
     public void updateOrderStatus() {
@@ -145,7 +146,7 @@ public class OrderService {
             }
         }
     }
-
+    // 주문 취소
     @Transactional
     public CommonResponseDto<Object> cancelOrder(CustomUserDetails customUserDetails, Long orderId) {
         String email = customUserDetails.getEmail();
@@ -172,4 +173,49 @@ public class OrderService {
 
         return commonService.successResponse(SuccessCode.ORDER_CANCELLED.getDescription(), HttpStatus.OK, null);
     }
+
+    // 상품 반품 신청
+    @Transactional
+    public CommonResponseDto<Object> requestReturn(CustomUserDetails customUserDetails, Long orderId) {
+
+        String email = customUserDetails.getEmail();
+        Users user = userRepository.findByEmail(email)
+                                   .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        Orders order = orderRepository.findByIdAndUsers(orderId, user)
+                                       .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (order.getOrderStatus() != OrderStatus.DELIVERY_COMPLETED) {
+            throw new BadRequestException(ErrorCode.INVALID_ORDER_STATUS);
+        }
+
+        if (order.getOrderDate().plusDays(3).isBefore(LocalDateTime.now())) {
+            throw new BadRequestException(ErrorCode.RETURN_PERIOD_EXPIRED);
+        }
+
+        orderRepository.updateOrderStatus(order.getId(), OrderStatus.REQUEST_FOR_RETURN);
+
+        return commonService.successResponse(SuccessCode.RETURN_SUCCESS.getDescription(), HttpStatus.OK, null);
+    }
+
+    // 반품 상태 업데이트 (매일 자정에 실행)
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정에 실행
+    //@Scheduled(cron = "0 0/1 * * * ?") // 매 1분마다 실행
+    public void updateReturnStatus() {
+        List<Orders> ordersList = orderRepository.findAll();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Orders order : ordersList) {
+            if (order.getOrderStatus() == OrderStatus.REQUEST_FOR_RETURN) {
+                if (order.getOrderDate().plusDays(1).isBefore(now)) {
+                    orderRepository.updateOrderStatus(order.getId(), OrderStatus.RETURN_COMPLETED);
+                    for (OrderItem item : order.getOrderItems()) {
+                        item.getDessertItem().getStock().increaseStock(item.getCount());
+                    }
+                }
+            }
+        }
+    }
+
 }

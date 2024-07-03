@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,6 +76,7 @@ public class OrderService {
                              .orderStatus(OrderStatus.ORDER_COMPLETED) // 기본값 설정
                              .orderDate(LocalDateTime.now())
                              .orderItems(Collections.singletonList(orderItem))
+                             .deliveryAddress(orderRequestDto.getDeliveryAddress())
                              .build();
 
         orderItemRepository.save(orderItem);
@@ -94,29 +96,36 @@ public class OrderService {
 
 
         List<Orders> ordersList = orderRepository.findOrdersByUserId(user.getId(), page, size);
+        List<OrderResponseDto> orderResponseDtoList = new ArrayList<>();
 
-        List<OrderResponseDto> orderResponseDtoList = ordersList.stream()
-                                                                .map(order -> OrderResponseDto.builder()
-                                                                                              .orderId(order.getId())
-                                                                                              .orderStatus(order.getOrderStatus()
-                                                                                                                .getDescription())
-                                                                                              .orderDate(order.getOrderDate())
-                                                                                              .totalPrice(order.getTotalPrice())
-                                                                                              .orderItemDtoList(order.getOrderItems()
-                                                                                                                     .stream()
-                                                                                                                     .map(item -> OrderItemDto.builder()
-                                                                                                                                              .orderItemId(item.getId())
-                                                                                                                                              .dessertId(item.getDessertItem()
-                                                                                                                                                             .getId())
-                                                                                                                                              .dessertName(item.getDessertItem()
-                                                                                                                                                               .getDessertName())
-                                                                                                                                              .count(item.getCount())
-                                                                                                                                              .price(item.getOrderPrice())
-                                                                                                                                              .build())
-                                                                                                                     .collect(Collectors.toList()))
-                                                                                              .build())
-                                                                .collect(Collectors.toList());
+        for (Orders order : ordersList) {
 
+            List<OrderItemDto> orderItemDtoList = order.getOrderItems()
+                                                       .stream()
+                                                       .map(item -> OrderItemDto.builder()
+                                                                                .orderItemId(item.getId())
+                                                                                .dessertId(item.getDessertItem()
+                                                                                               .getId())
+                                                                                .dessertName(item.getDessertItem()
+                                                                                                 .getDessertName())
+                                                                                .count(item.getCount())
+                                                                                .price(item.getOrderPrice())
+                                                                                .build())
+                                                       .collect(Collectors.toList());
+
+            OrderResponseDto orderResponseDto = OrderResponseDto.builder()
+                                                                .orderId(order.getId())
+                                                                .orderStatus(order.getOrderStatus()
+                                                                                  .getDescription())
+                                                                .deliveryAddress(order.getDeliveryAddress())
+                                                                .orderDate(order.getOrderDate())
+                                                                .totalPrice(order.getTotalPrice())
+                                                                .orderItemDtoList(orderItemDtoList)
+
+                                                                .build();
+            orderResponseDtoList.add(orderResponseDto);
+
+        }
         OrderResponseList orderResponseListDto = OrderResponseList.builder()
                                                                   .orderResponseDtoList(orderResponseDtoList)
                                                                   .build();
@@ -136,8 +145,10 @@ public class OrderService {
                                                    .stream()
                                                    .map(item -> OrderItemDto.builder()
                                                                             .orderItemId(item.getId())
-                                                                            .dessertId(item.getDessertItem().getId())
-                                                                            .dessertName(item.getDessertItem().getDessertName())
+                                                                            .dessertId(item.getDessertItem()
+                                                                                           .getId())
+                                                                            .dessertName(item.getDessertItem()
+                                                                                             .getDessertName())
                                                                             .count(item.getCount())
                                                                             .price(item.getOrderPrice())
                                                                             .build())
@@ -145,10 +156,12 @@ public class OrderService {
 
         OrderResponseDto orderResponseDto = OrderResponseDto.builder()
                                                             .orderId(order.getId())
-                                                            .orderStatus(order.getOrderStatus().getDescription())
+                                                            .orderStatus(order.getOrderStatus()
+                                                                              .getDescription())
                                                             .orderDate(order.getOrderDate())
                                                             .totalPrice(order.getTotalPrice())
                                                             .orderItemDtoList(orderItemDtoList)
+                                                            .deliveryAddress(order.getDeliveryAddress())
                                                             .build();
 
         return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, orderResponseDto);
@@ -177,6 +190,7 @@ public class OrderService {
             }
         }
     }
+
     // 주문 취소
     @Transactional
     public CommonResponseDto<Object> cancelOrder(CustomUserDetails customUserDetails, Long orderId) {
@@ -214,13 +228,15 @@ public class OrderService {
                                    .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         Orders order = orderRepository.findByIdAndUsers(orderId, user)
-                                       .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
+                                      .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         if (order.getOrderStatus() != OrderStatus.DELIVERY_COMPLETED) {
             throw new BadRequestException(ErrorCode.INVALID_ORDER_STATUS);
         }
 
-        if (order.getOrderDate().plusDays(3).isBefore(LocalDateTime.now())) {
+        if (order.getOrderDate()
+                 .plusDays(3)
+                 .isBefore(LocalDateTime.now())) {
             throw new BadRequestException(ErrorCode.RETURN_PERIOD_EXPIRED);
         }
 
@@ -239,10 +255,14 @@ public class OrderService {
 
         for (Orders order : ordersList) {
             if (order.getOrderStatus() == OrderStatus.REQUEST_FOR_RETURN) {
-                if (order.getOrderDate().plusDays(1).isBefore(now)) {
+                if (order.getOrderDate()
+                         .plusDays(1)
+                         .isBefore(now)) {
                     orderRepository.updateOrderStatus(order.getId(), OrderStatus.RETURN_COMPLETED);
                     for (OrderItem item : order.getOrderItems()) {
-                        item.getDessertItem().getStock().increaseStock(item.getCount());
+                        item.getDessertItem()
+                            .getStock()
+                            .increaseStock(item.getCount());
                     }
                 }
             }

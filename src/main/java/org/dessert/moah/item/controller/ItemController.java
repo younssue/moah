@@ -17,8 +17,8 @@ public class ItemController {
 
     // 전체 리스트 조회
     @GetMapping
-    public ResponseEntity<ResultDto<ItemResponseListDto>> getItemList(){
-        CommonResponseDto<Object> commonResponseDto = itemService.getItemList();
+    public ResponseEntity<ResultDto<ItemResponseListDto>> getItemList(@RequestParam int page,@RequestParam int size){
+        CommonResponseDto<Object> commonResponseDto = itemService.getItemList(page,size);
         ResultDto<ItemResponseListDto> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         resultDto.setData((ItemResponseListDto) commonResponseDto.getData());
 

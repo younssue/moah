@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.dessert.moah.item.entity.DessertItem;
 
 @Entity
@@ -22,6 +23,7 @@ public class OrderItem {
     @Column(nullable = false)
     private int count; //수량
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Orders orders;
@@ -43,7 +45,4 @@ public class OrderItem {
         return orderPrice*count;
     }
 
-    public void setOrders(Orders orders) {
-        this.orders = orders;
-    }
 }

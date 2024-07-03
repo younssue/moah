@@ -31,6 +31,9 @@ public class Orders {
     @Column(name = "order_date")
     private LocalDateTime orderDate; // 주문 시간
 
+    @Column(name = "delivery_address")
+    private String deliveryAddress;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -40,11 +43,12 @@ public class Orders {
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Builder
-    public Orders(OrderStatus orderStatus, LocalDateTime orderDate, Users users, List<OrderItem> orderItems) {
+    public Orders(OrderStatus orderStatus, LocalDateTime orderDate, Users users, List<OrderItem> orderItems, String deliveryAddress) {
         this.orderStatus = orderStatus;
         this.orderDate = orderDate;
         this.users = users;
         this.orderItems = new ArrayList<>();
+        this.deliveryAddress = deliveryAddress;
     }
 
     // 전체 품목의 주문 금액

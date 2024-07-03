@@ -22,8 +22,8 @@ public class ItemService {
     private final DessertItemRepository dessertItemRepository;
 
 
-    public CommonResponseDto<Object> getItemList() {
-        List<DessertItem> dessertItems = dessertItemRepository.findByDeletedAtIsNull();
+    public CommonResponseDto<Object> getItemList(int page, int size) {
+        List<DessertItem> dessertItems = dessertItemRepository.findDessertItem(page,size);
         List<ItemResponseDto> itemResponseDtos = new ArrayList<>();
 
         for (DessertItem dessertItem : dessertItems) {

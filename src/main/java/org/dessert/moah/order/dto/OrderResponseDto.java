@@ -10,9 +10,12 @@ import java.util.List;
 @Builder
 public class OrderResponseDto {
     private Long orderId;
+    private List<OrderItemDto> orderItemDtoList;
     private String orderStatus;
     private LocalDateTime orderDate;
     private int totalPrice;
-    private List<OrderItemDto> orderItemDtoList;
+    private String deliveryAddress;
+
+
 
 }

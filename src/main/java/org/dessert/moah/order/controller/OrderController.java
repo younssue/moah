@@ -40,8 +40,7 @@ public class OrderController {
 
     // 주문 전체 조회
     @GetMapping
-    public ResponseEntity<ResultDto<OrderResponseList>> getOrders(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam int page,
-                                                                  @RequestParam int size) {
+    public ResponseEntity<ResultDto<OrderResponseList>> getOrders(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam int page, @RequestParam int size) {
         CommonResponseDto<Object> commonResponseDto = orderService.getOrders(customUserDetails, page, size);
         ResultDto<OrderResponseList> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
         resultDto.setData((OrderResponseList) commonResponseDto.getData());
@@ -82,7 +81,6 @@ public class OrderController {
         return ResponseEntity.status(commonResponseDto.getHttpStatus())
                              .body(resultDto);
     }
-
 
 
 }

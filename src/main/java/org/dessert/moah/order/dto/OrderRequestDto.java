@@ -8,4 +8,5 @@ import lombok.Getter;
 public class OrderRequestDto {
     private Long dessertId;
     private int count;
+    private String deliveryAddress;
 }

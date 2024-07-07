@@ -6,24 +6,30 @@ import org.dessert.moah.common.service.CommonService;
 import org.dessert.moah.common.type.SuccessCode;
 import org.dessert.moah.item.dto.ItemResponseDto;
 import org.dessert.moah.item.dto.ItemResponseListDto;
+import org.dessert.moah.item.dto.RemainStockDto;
 import org.dessert.moah.item.dto.StockDto;
 import org.dessert.moah.item.entity.DessertItem;
+import org.dessert.moah.item.entity.Stock;
 import org.dessert.moah.item.repository.DessertItemRepository;
+import org.dessert.moah.item.repository.StockRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ItemService {
     private final CommonService commonService;
     private final DessertItemRepository dessertItemRepository;
+    private final StockRepository stockRepository;
 
 
     public CommonResponseDto<Object> getItemList(int page, int size) {
-        List<DessertItem> dessertItems = dessertItemRepository.findDessertItem(page,size);
+        List<DessertItem> dessertItems = dessertItemRepository.findDessertItem(page, size);
         List<ItemResponseDto> itemResponseDtos = new ArrayList<>();
 
         for (DessertItem dessertItem : dessertItems) {
@@ -89,5 +95,20 @@ public class ItemService {
                                                          .dessertItemImg(mainImgPath)
                                                          .build();
         return commonService.successResponse(SuccessCode.EXAMPLE_SUCCESS.getDescription(), HttpStatus.OK, itemResponseDto);
+    }
+
+    @Transactional(readOnly = true)
+    public CommonResponseDto<Object> checkRemainingStock(Long dessertId) {
+        DessertItem dessertItem = dessertItemRepository.findByIdAndDeletedAtIsNull(dessertId);
+
+
+        Optional<Stock> stock = stockRepository.findById(dessertItem.getStock().getId());
+        RemainStockDto remainStockDto = RemainStockDto.builder()
+                .dessertId(dessertId)
+                .dessertName(dessertItem.getDessertName())
+                                          .stockAmount(stock.get().getStockAmount())
+                                          .build();
+
+        return commonService.successResponse(SuccessCode.STOCK_SUCCESS.getDescription(), HttpStatus.OK, remainStockDto);
     }
 }

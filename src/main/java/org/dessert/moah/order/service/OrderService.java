@@ -42,6 +42,7 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final UserRepository userRepository;
     private final DessertItemRepository dessertItemRepository;
+    private final StockService stockService;
 
     // 주문 하기
     public CommonResponseDto<Object> createOrder(CustomUserDetails customUserDetails, OrderRequestDto orderRequestDto) {
@@ -59,8 +60,8 @@ public class OrderService {
         if (stock.getStockAmount() < orderRequestDto.getCount()) {
             throw new OutOfStockException(ErrorCode.OUT_OF_STOCK);
         }
-        stock.decreaseStock(orderRequestDto.getCount());
-
+       // stock.decreaseStock(orderRequestDto.getCount());
+        stockService.decreaseStock(stock.getId(),orderRequestDto.getCount());
 
         // 주문 생성
 

@@ -28,11 +28,17 @@ public class Stock {
     @JoinColumn(name = "dessert_id")
     private DessertItem dessertItem;
 
-    @Builder
-    public Stock(int stockAmount, int sellAmount, DessertItem dessertItem) {
+    @Version
+    private Long version; // 낙관적 잠금을 위한 버전 필드
+
+
+
+   @Builder
+    public Stock(int stockAmount, int sellAmount, DessertItem dessertItem,Long version) {
         this.stockAmount = stockAmount;
         this.sellAmount = sellAmount;
         this.dessertItem = dessertItem;
+        this.version = 0L; // 초기 버전 값 설정
     }
 
     public void decreaseStock(int amount) {

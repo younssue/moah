@@ -24,11 +24,11 @@ public class OrderItem {
     private int count; //수량
 
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Orders orders;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dessert_id")
     private DessertItem dessertItem;
 

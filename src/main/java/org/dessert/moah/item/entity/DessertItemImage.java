@@ -18,7 +18,7 @@ public class DessertItemImage {
 
     private String img_url;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dessert_id")
     private DessertItem dessertItem;
 

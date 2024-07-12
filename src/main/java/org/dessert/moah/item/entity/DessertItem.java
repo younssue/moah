@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.dessert.moah.common.entity.BaseTime;
 import org.dessert.moah.item.type.DessertType;
 import org.dessert.moah.item.type.SaleStatus;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@Setter
 @Table(name = "dessert_item")
 public class DessertItem extends BaseTime {
     @Id
@@ -36,10 +38,10 @@ public class DessertItem extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private DessertType dessertType;
 
-    @OneToOne(mappedBy = "dessertItem")
+    @OneToOne(mappedBy = "dessertItem", fetch = FetchType.LAZY)
     private Stock stock;
 
-    @OneToMany(mappedBy = "dessertItem")
+    @OneToMany(mappedBy = "dessertItem", fetch = FetchType.LAZY)
     private List<DessertItemImage> dessertItemImages = new ArrayList<>();
 
     @Builder

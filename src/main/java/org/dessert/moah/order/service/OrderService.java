@@ -45,6 +45,7 @@ public class OrderService {
     private final StockService stockService;
 
     // 주문 하기
+    @Transactional
     public CommonResponseDto<Object> createOrder(CustomUserDetails customUserDetails, OrderRequestDto orderRequestDto) {
         // 유저 확인
         String email = customUserDetails.getEmail();

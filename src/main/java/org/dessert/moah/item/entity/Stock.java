@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.dessert.moah.common.type.ErrorCode;
 import org.dessert.moah.common.exception.OutOfStockException;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "stock")
 public class Stock {
@@ -24,7 +26,7 @@ public class Stock {
     @Column(nullable = false)
     private int sellAmount;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dessert_id")
     private DessertItem dessertItem;
 
@@ -34,11 +36,11 @@ public class Stock {
 
 
    @Builder
-    public Stock(int stockAmount, int sellAmount, DessertItem dessertItem,Long version) {
+    public Stock(int stockAmount, int sellAmount, DessertItem dessertItem) {
         this.stockAmount = stockAmount;
         this.sellAmount = sellAmount;
         this.dessertItem = dessertItem;
-        this.version = 0L; // 초기 버전 값 설정
+
     }
 
     public void decreaseStock(int amount) {

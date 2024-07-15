@@ -20,7 +20,7 @@ public class StockRepositoryImpl implements StockRepositoryCustom{
 
         Stock result = queryFactory.selectFrom(stock)
                                    .where(stock.id.eq(stockId))
-                                   .setLockMode(LockModeType.OPTIMISTIC)
+                                   .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                                    .fetchOne();
 
         return Optional.ofNullable(result);

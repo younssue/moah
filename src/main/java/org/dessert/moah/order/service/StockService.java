@@ -37,7 +37,7 @@ public class StockService {
 
     }*/
 
-    @Transactional
+    /*@Transactional
     @Retryable(
             value = {ConcurrencyFailureException.class, StaleObjectStateException.class},
             maxAttempts = 5,
@@ -46,14 +46,22 @@ public class StockService {
     public void decreaseStock(Long stockId, int amount) {
         Stock stock = null;
         try {
-            stock = stockRepository.findById(stockId)
+            stock = stockRepository.findByStockIdWithLock(stockId)
                                    .orElseThrow(() -> new RuntimeException("Stock not found"));
             stock.decreaseStock(amount);
-            log.info("version: {}", stock.getVersion());
+//            log.info("version: {}", stock.getVersion());
             stockRepository.save(stock);
 //            stock.setVersion(stock.getVersion() + 1);
 
-        } /*catch (ConcurrencyFailureException | StaleObjectStateException e) {
+        } catch (ConcurrencyFailureException | StaleObjectStateException e) {
+            // Log the error with version info
+            if (stock != null) {
+                log.error("Optimistic Locking Failure on Stock with ID: {}, version: {}", stockId, e);
+            } else {
+                log.error("Optimistic Locking Failure on Stock with ID: {}", stockId, e);
+            }
+            throw e;
+        } *//* catch (Exception  e) {
             // Log the error with version info
             if (stock != null) {
                 log.error("Optimistic Locking Failure on Stock with ID: {}, version: {}", stockId, stock.getVersion(), e);
@@ -61,16 +69,23 @@ public class StockService {
                 log.error("Optimistic Locking Failure on Stock with ID: {}", stockId, e);
             }
             throw e;
-        }*/  catch (Exception  e) {
-            // Log the error with version info
-            if (stock != null) {
-                log.error("Optimistic Locking Failure on Stock with ID: {}, version: {}", stockId, stock.getVersion(), e);
-            } else {
-                log.error("Optimistic Locking Failure on Stock with ID: {}", stockId, e);
-            }
-            throw e;
-        }
-    }
+        }*//*
+    }*/
 
+    @Transactional
+    @Retryable(
+            value = {ConcurrencyFailureException.class, StaleObjectStateException.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 100)
+    )
+    public void decreaseStock(Long stockId, int amount) {
+        Stock stock = stockRepository.findByStockIdWithLock(stockId)
+                                     .orElseThrow(() -> new RuntimeException("Stock not found"));
+
+        log.info("재고 감소 시도: stockId={}, 감소량={}", stockId, amount);
+        stock.decreaseStock(amount);
+        stockRepository.save(stock);
+        log.info("재고 감소 완료: stockId={}, 감소량={}, 남은 재고={}", stockId, amount, stock.getStockAmount());
+    }
 
 }

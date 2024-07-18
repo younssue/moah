@@ -14,7 +14,7 @@ import java.util.Optional;
 public class StockRepositoryImpl implements StockRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
-    @Override
+    /*@Override
     public Optional<Stock> findByStockIdWithLock(Long stockId) {
         QStock stock = QStock.stock;
 
@@ -24,5 +24,5 @@ public class StockRepositoryImpl implements StockRepositoryCustom{
                                    .fetchOne();
 
         return Optional.ofNullable(result);
-    }
+    }*/
 }

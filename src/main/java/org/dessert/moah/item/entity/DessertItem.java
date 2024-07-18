@@ -1,5 +1,6 @@
 package org.dessert.moah.item.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.dessert.moah.common.entity.BaseTime;
 import org.dessert.moah.item.type.DessertType;
 import org.dessert.moah.item.type.SaleStatus;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Table(name = "dessert_item")
-public class DessertItem extends BaseTime {
+public class DessertItem extends BaseTime /*implements Serializable*/ {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "dessert_id")
@@ -38,7 +40,8 @@ public class DessertItem extends BaseTime {
     @Enumerated(value = EnumType.STRING)
     private DessertType dessertType;
 
-    @OneToOne(mappedBy = "dessertItem", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "dessertItem", fetch = FetchType.LAZY , optional = false ,cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Stock stock;
 
     @OneToMany(mappedBy = "dessertItem", fetch = FetchType.LAZY)

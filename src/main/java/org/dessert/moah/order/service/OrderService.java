@@ -1,6 +1,7 @@
 package org.dessert.moah.order.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dessert.moah.common.dto.CommonResponseDto;
 import org.dessert.moah.common.service.CommonService;
 import org.dessert.moah.common.type.ErrorCode;
@@ -34,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -57,12 +59,26 @@ public class OrderService {
                                                        .orElseThrow(() -> new NotFoundException(ErrorCode.ITEM_NOT_FOUND));
 
         // 재고 확인 및 감소
-        Stock stock = dessertItem.getStock();
+/*        Long stockId= dessertItem.getStock().getId();
+        System.out.println("캐싱처리 성공이라면 select stock 쿼리 발생 하지 않는다");
+
+        Stock stock = stockService.getStock(stockId);
+
+        System.out.println("캐싱처리 성공이라면 select stock 쿼리 발생 하지 않는다2");*/
+        Long stockId = dessertItem.getStock().getId();
+        log.info("재고 확인을 위한 stockId: {}", stockId);
+        Stock stock = stockService.getStock(stockId); // stockId가 null이 아닌지 확인
+        if (stock == null) {
+            log.error("Stock is null for stockId: {}", stockId);
+            throw new NotFoundException(ErrorCode.OUT_OF_STOCK);
+        }
+        log.info("캐싱처리 성공이라면 select stock 쿼리 발생 하지 않는다2");
         if (stock.getStockAmount() < orderRequestDto.getCount()) {
             throw new OutOfStockException(ErrorCode.OUT_OF_STOCK);
         }
        // stock.decreaseStock(orderRequestDto.getCount());
-        stockService.decreaseStock(stock.getId(),orderRequestDto.getCount());
+
+        stockService.decreaseStock(stock,orderRequestDto.getCount() ,dessertItem);
 
         // 주문 생성
 

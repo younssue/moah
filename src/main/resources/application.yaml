@@ -1,4 +1,8 @@
 spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DATABASE_URL}/${DATABASE_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
@@ -12,10 +16,10 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-#    open-in-view: false
-#        dialect: org.hibernate.dialect.MySQLDialect
-#  profiles:
-#    active: docker
+  #    open-in-view: false
+  #        dialect: org.hibernate.dialect.MySQLDialect
+  #  profiles:
+  #    active: docker
   task:
     scheduling:
       pool:
@@ -23,10 +27,9 @@ spring:
       shutdown:
         await-termination: true
         await-termination-period: 30s
+#  retry:
+#    enabled: true
 
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
-
-
-

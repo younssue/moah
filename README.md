@@ -138,6 +138,17 @@
 
 <br>
 
+## 📙 프로젝트 아키텍처 
+
+- 배포 후 추가 예정
+
+## 🕶️ 성능 최적화 
+
+- [ redis와 낙관적락/비관적락 비교 ](https://bottlenose-jelly-b01.notion.site/redis-vs-c409bddcf84d4b52b0b9bf1152c5a2fc?pvs=74)
+
+
+
+
 
 
 

@@ -3,6 +3,7 @@ package org.dessert.moah.order.controller;
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.common.dto.CommonResponseDto;
 import org.dessert.moah.common.dto.ResultDto;
+import org.dessert.moah.order.service.OrderLockService;
 import org.dessert.moah.user.dto.CustomUserDetails;
 import org.dessert.moah.order.dto.OrderRequestDto;
 import org.dessert.moah.order.dto.OrderResponseDto;
@@ -17,11 +18,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/moah/orders")
 public class OrderController {
     private final OrderService orderService;
+    private final OrderLockService orderLockService;
 
     // 주문하기
     @PostMapping
     public ResponseEntity<ResultDto<Void>> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OrderRequestDto orderRequestDto) {
-        CommonResponseDto<Object> commonResponseDto = orderService.createOrder(customUserDetails, orderRequestDto);
+        CommonResponseDto<Object> commonResponseDto =
+                //orderService.createOrder(customUserDetails, orderRequestDto);
+
+         orderLockService.createOrder(customUserDetails, orderRequestDto);
+
         ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus())

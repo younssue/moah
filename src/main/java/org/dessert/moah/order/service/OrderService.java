@@ -67,12 +67,14 @@ public class OrderService {
         System.out.println("캐싱처리 성공이라면 select stock 쿼리 발생 하지 않는다2");*/
         Long stockId = dessertItem.getStock().getId();
         log.info("재고 확인을 위한 stockId: {}", stockId);
+
         Stock stock = stockService.getStock(stockId); // stockId가 null이 아닌지 확인
         if (stock == null) {
             log.error("Stock is null for stockId: {}", stockId);
             throw new NotFoundException(ErrorCode.OUT_OF_STOCK);
         }
-        log.info("캐싱처리 성공이라면 select stock 쿼리 발생 하지 않는다2");
+
+
         if (stock.getStockAmount() < orderRequestDto.getCount()) {
             throw new OutOfStockException(ErrorCode.OUT_OF_STOCK);
         }

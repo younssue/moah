@@ -16,143 +16,43 @@
 ## 🛠 프로젝트 구조  
 
 ```java
-── src
-    ├── main
-    │   ├── generated
-    │   │   └── org
-    │   │       └── dessert
-    │   │           └── moah
-    │   │               ├── common
-    │   │               │   └── entity
-    │   │               │       └── QBaseTime.java
-    │   │               ├── item
-    │   │               │   └── entity
-    │   │               │       ├── QDessertItem.java
-    │   │               │       ├── QDessertItemImage.java
-    │   │               │       └── QStock.java
-    │   │               ├── order
-    │   │               │   └── entity
-    │   │               │       ├── QOrderItem.java
-    │   │               │       └── QOrders.java
-    │   │               └── user
-    │   │                   └── entity
-    │   │                       ├── QSession.java
-    │   │                       └── QUsers.java
-    │   ├── java
-    │   │   └── org
-    │   │       └── dessert
-    │   │           └── moah
-    │   │               ├── MoahApplication.java
-    │   │               ├── common
-    │   │               │   ├── config
-    │   │               │   │   ├── CacheConfig.java
-    │   │               │   │   ├── QueryDslConfig.java
-    │   │               │   │   ├── RedisConfig.java
-    │   │               │   │   └── SecurityConfig.java
-    │   │               │   ├── controller
-    │   │               │   │   ├── ExampleController.java
-    │   │               │   │   └── MainController.java
-    │   │               │   ├── dto
-    │   │               │   │   ├── CommonResponseDto.java
-    │   │               │   │   ├── ExampleDto.java
-    │   │               │   │   ├── PaginationDto.java
-    │   │               │   │   └── ResultDto.java
-    │   │               │   ├── entity
-    │   │               │   │   └── BaseTime.java
-    │   │               │   ├── exception
-    │   │               │   │   ├── BadRequestException.java
-    │   │               │   │   ├── GlobalExceptionHandler.java
-    │   │               │   │   ├── NotFoundException.java
-    │   │               │   │   └── OutOfStockException.java
-    │   │               │   ├── jwt
-    │   │               │   │   ├── CustomLogoutFilter.java
-    │   │               │   │   ├── JWTFilter.java
-    │   │               │   │   ├── JWTUtil.java
-    │   │               │   │   └── LoginFilter.java
-    │   │               │   ├── service
-    │   │               │   │   ├── CommonService.java
-    │   │               │   │   └── ExampleService.java
-    │   │               │   └── type
-    │   │               │       ├── ErrorCode.java
-    │   │               │       ├── ResponseStatus.java
-    │   │               │       └── SuccessCode.java
-    │   │               ├── item
-    │   │               │   ├── controller
-    │   │               │   │   └── ItemController.java
-    │   │               │   ├── dto
-    │   │               │   │   ├── ItemResponseDto.java
-    │   │               │   │   ├── ItemResponseListDto.java
-    │   │               │   │   ├── RemainStockDto.java
-    │   │               │   │   └── StockDto.java
-    │   │               │   ├── entity
-    │   │               │   │   ├── DessertItem.java
-    │   │               │   │   ├── DessertItemImage.java
-    │   │               │   │   └── Stock.java
-    │   │               │   ├── repository
-    │   │               │   │   ├── DessertItemImageRepository.java
-    │   │               │   │   ├── DessertItemRepository.java
-    │   │               │   │   ├── DessertItemRepositoryCustom.java
-    │   │               │   │   ├── DessertItemRepositoryImpl.java
-    │   │               │   │   ├── StockRepository.java
-    │   │               │   │   ├── StockRepositoryCustom.java
-    │   │               │   │   └── StockRepositoryImpl.java
-    │   │               │   ├── service
-    │   │               │   │   └── ItemService.java
-    │   │               │   └── type
-    │   │               │       ├── DessertType.java
-    │   │               │       └── SaleStatus.java
-    │   │               ├── order
-    │   │               │   ├── controller
-    │   │               │   │   └── OrderController.java
-    │   │               │   ├── dto
-    │   │               │   │   ├── OrderItemDto.java
-    │   │               │   │   ├── OrderRequestDto.java
-    │   │               │   │   ├── OrderResponseDto.java
-    │   │               │   │   └── OrderResponseList.java
-    │   │               │   ├── entity
-    │   │               │   │   ├── OrderItem.java
-    │   │               │   │   └── Orders.java
-    │   │               │   ├── repository
-    │   │               │   │   ├── OrderItemRepository.java
-    │   │               │   │   ├── OrderRepository.java
-    │   │               │   │   ├── OrderRepositoryCustom.java
-    │   │               │   │   └── OrderRepositoryImpl.java
-    │   │               │   ├── service
-    │   │               │   │   ├── OrderLockService.java
-    │   │               │   │   ├── OrderService.java
-    │   │               │   │   ├── StockLockService.java
-    │   │               │   │   ├── StockRedisAndLockService.java
-    │   │               │   │   └── StockService.java
-    │   │               │   └── type
-    │   │               │       └── OrderStatus.java
-    │   │               └── user
-    │   │                   ├── controller
-    │   │                   │   ├── ReissueController.java
-    │   │                   │   └── UserController.java
-    │   │                   ├── dto
-    │   │                   │   ├── CustomUserDetails.java
-    │   │                   │   ├── LoginRequestDto.java
-    │   │                   │   ├── LoginResponseDto.java
-    │   │                   │   ├── SignupRequestDto.java
-    │   │                   │   └── UpdateUserInfoRequestDto.java
-    │   │                   ├── entity
-    │   │                   │   ├── Session.java
-    │   │                   │   └── Users.java
-    │   │                   ├── repository
-    │   │                   │   ├── SessionRepository.java
-    │   │                   │   └── UserRepository.java
-    │   │                   ├── service
-    │   │                   │   ├── CustomUserDetailsService.java
-    │   │                   │   ├── ReissueService.java
-    │   │                   │   └── UserService.java
-    │   │                   └── type
-    │   │                       └── UserRoleEnum.java
-    │   └── resources
-    │       ├── application-dev.yaml
-    │       ├── application-test.yaml
-    │       ├── application.yaml
-    │       ├── static
-    │       └── templates
+├── java
+│   │   └── org
+│   │       └── dessert
+│   │           └── moah
+│   │               ├── common
+│   │               │   ├── config
+│   │               │   ├── controller
+│   │               │   ├── dto
+│   │               │   ├── entity
+│   │               │   ├── exception
+│   │               │   ├── jwt
+│   │               │   ├── service
+│   │               │   └── type
+│   │               ├── item
+│   │               │   ├── controller
+│   │               │   ├── dto
+│   │               │   ├── entity
+│   │               │   ├── repository
+│   │               │   ├── service
+│   │               │   └── type
+│   │               ├── order
+│   │               │   ├── controller
+│   │               │   ├── dto
+│   │               │   ├── entity
+│   │               │   ├── repository
+│   │               │   ├── service
+│   │               │   └── type
+│   │               └── user
+│   │                   ├── controller
+│   │                   ├── dto
+│   │                   ├── entity
+│   │                   ├── repository
+│   │                   ├── service
+│   │                   └── type
+│   └── resources
+│       ├── static
+│       └── templates
 
 ```
 

@@ -15,6 +15,8 @@
 
 ## 🛠 프로젝트 구조  
 
+
+
 ```java
 ├── java
 │   │   └── org
@@ -55,6 +57,12 @@
 │       └── templates
 
 ```
+
+<br>
+
+## 🛢️ ERD 
+
+![image](https://github.com/user-attachments/assets/4520ff66-b582-4210-bbbf-6d346a650e53)
 
 <br>
 

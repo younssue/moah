@@ -13,9 +13,19 @@
 
 <br>
 
+## 📐 기술 스택 
+
+- Spring Boot
+- Spring Security
+- JPA / Hibernate
+- MySQL
+- Redis
+- Docker / Docker Compose
+
+<br>
+
+
 ## 🛠 프로젝트 구조  
-
-
 
 ```java
 ├── java
@@ -120,7 +130,14 @@
 
 </div>
 </details>
+<br>
 
 ## 📋 API 문서
 
 [Moah PostMan API Document](https://documenter.getpostman.com/view/30861175/2sA3kUFgcG) 
+
+<br>
+
+
+
+

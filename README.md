@@ -13,62 +13,18 @@
 
 <br>
 
-## 📐 기술 스택 
+## 📐 기술 스택
 
-- Spring Boot
+- Java 17 
+- Spring Boot 3.2.7
 - Spring Security
 - JPA / Hibernate
-- MySQL
-- Redis
+- MySQL 8
+- Redis 6.2
 - Docker / Docker Compose
 
 <br>
 
-
-## 🛠 프로젝트 구조  
-
-```java
-├── java
-│   │   └── org
-│   │       └── dessert
-│   │           └── moah
-│   │               ├── common
-│   │               │   ├── config
-│   │               │   ├── controller
-│   │               │   ├── dto
-│   │               │   ├── entity
-│   │               │   ├── exception
-│   │               │   ├── jwt
-│   │               │   ├── service
-│   │               │   └── type
-│   │               ├── item
-│   │               │   ├── controller
-│   │               │   ├── dto
-│   │               │   ├── entity
-│   │               │   ├── repository
-│   │               │   ├── service
-│   │               │   └── type
-│   │               ├── order
-│   │               │   ├── controller
-│   │               │   ├── dto
-│   │               │   ├── entity
-│   │               │   ├── repository
-│   │               │   ├── service
-│   │               │   └── type
-│   │               └── user
-│   │                   ├── controller
-│   │                   ├── dto
-│   │                   ├── entity
-│   │                   ├── repository
-│   │                   ├── service
-│   │                   └── type
-│   └── resources
-│       ├── static
-│       └── templates
-
-```
-
-<br>
 
 ## 🛢️ ERD 
 

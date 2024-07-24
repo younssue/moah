@@ -101,8 +101,10 @@
 <br>
 
 ## 🐛 트러블 슈팅
+<br>
 
-낙관적락 충돌 ** StaleObjectStateException ** 오류 
+- 낙관적락 충돌 **StaleObjectStateException** 오류
+<br>
   ![image](https://github.com/user-attachments/assets/902b7b5d-8840-40bf-9121-9c9e0d55d3f1)
     - 재고가 남아있는데도 감소가 되지 않는 현상
       ![image](https://github.com/user-attachments/assets/24e1e87b-3c08-4d8d-b8b3-824bbfba7d3b)

@@ -106,7 +106,10 @@
 - 낙관적락 충돌 **StaleObjectStateException** 오류
 <br>
   ![image](https://github.com/user-attachments/assets/902b7b5d-8840-40bf-9121-9c9e0d55d3f1)
+
     - 재고가 남아있는데도 감소가 되지 않는 현상
+ 
+      
       ![image](https://github.com/user-attachments/assets/24e1e87b-3c08-4d8d-b8b3-824bbfba7d3b)
 
 -> [Facade 패턴을 사용하여 트랜잭션 시점을 변경하여 해결](https://velog.io/@younssue/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85-%EB%82%99%EA%B4%80%EC%A0%81%EB%9D%BD-%EC%9E%AC%EA%B3%A0-%EA%B0%90%EC%86%8C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0) 

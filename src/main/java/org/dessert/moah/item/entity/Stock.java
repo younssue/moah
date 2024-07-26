@@ -20,9 +20,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Slf4j
 @Table(name = "stock")
-public class Stock /*implements Serializable*/ {
+public class Stock  {
 
-    private static final long serialVersionUID = 1L; // 명시적 serialVersionUID 설정
 
 
     @Id
@@ -42,8 +41,9 @@ public class Stock /*implements Serializable*/ {
     @JsonIgnore
     private DessertItem dessertItem;
 
-   /* @Version
-    private Long version;*/ // 낙관적 잠금을 위한 버전 필드
+
+//    @Version
+//    private Long version; // 낙관적 잠금을 위한 버전 필드
 
 
 

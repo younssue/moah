@@ -69,6 +69,8 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
+    // redisson
+    implementation group: 'org.redisson', name: 'redisson', version: '3.27.2'
 
 
 }

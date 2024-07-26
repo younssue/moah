@@ -6,6 +6,7 @@ import org.dessert.moah.common.dto.CommonResponseDto;
 import org.dessert.moah.common.service.CommonService;
 import org.dessert.moah.common.type.ErrorCode;
 import org.dessert.moah.common.type.SuccessCode;
+import org.dessert.moah.order.facade.RedissonLockStockFacade;
 import org.dessert.moah.user.dto.CustomUserDetails;
 import org.dessert.moah.order.dto.OrderItemDto;
 import org.dessert.moah.order.dto.OrderRequestDto;
@@ -45,6 +46,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final DessertItemRepository dessertItemRepository;
     private final StockService stockService;
+//    private final RedissonLockStockFacade redissonLockStockFacade;
 
     // 주문 하기
     @Transactional
@@ -59,30 +61,18 @@ public class OrderService {
                                                        .orElseThrow(() -> new NotFoundException(ErrorCode.ITEM_NOT_FOUND));
 
         // 재고 확인 및 감소
-/*        Long stockId= dessertItem.getStock().getId();
-        System.out.println("캐싱처리 성공이라면 select stock 쿼리 발생 하지 않는다");
 
-        Stock stock = stockService.getStock(stockId);
 
-        System.out.println("캐싱처리 성공이라면 select stock 쿼리 발생 하지 않는다2");*/
-        Long stockId = dessertItem.getStock().getId();
-        log.info("재고 확인을 위한 stockId: {}", stockId);
-
-        Stock stock = stockService.getStock(stockId); // stockId가 null이 아닌지 확인
+        Stock stock = stockService.getStock(dessertItem.getStock()
+                                                       .getId()); // stockId가 null이 아닌지 확인
         if (stock == null) {
-            log.error("Stock is null for stockId: {}", stockId);
+            log.error("Stock is null for stockId: {}", stock.getId());
             throw new NotFoundException(ErrorCode.OUT_OF_STOCK);
         }
 
 
-        if (stock.getStockAmount() < orderRequestDto.getCount()) {
-            throw new OutOfStockException(ErrorCode.OUT_OF_STOCK);
-        }
-       // stock.decreaseStock(orderRequestDto.getCount());
+        stockService.decreaseStock(stock,orderRequestDto.getCount() , dessertItem);
 
-        stockService.decreaseStock(stock,orderRequestDto.getCount() ,dessertItem);
-
-        // 주문 생성
 
         OrderItem orderItem = OrderItem.builder()
                                        .orderPrice(dessertItem.getPrice())
@@ -288,5 +278,6 @@ public class OrderService {
             }
         }
     }
+
 
 }

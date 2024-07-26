@@ -3,6 +3,9 @@ package org.dessert.moah.order.controller;
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.common.dto.CommonResponseDto;
 import org.dessert.moah.common.dto.ResultDto;
+import org.dessert.moah.order.facade.OptimisticLockStockFacade;
+import org.dessert.moah.order.facade.PessimisticLockOrderFacade;
+import org.dessert.moah.order.facade.RedissonLockStockFacade;
 import org.dessert.moah.order.service.OrderLockService;
 import org.dessert.moah.user.dto.CustomUserDetails;
 import org.dessert.moah.order.dto.OrderRequestDto;
@@ -19,19 +22,29 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     private final OrderService orderService;
     private final OrderLockService orderLockService;
+    private final RedissonLockStockFacade redissonLockStockFacade;
+    private final OptimisticLockStockFacade optimisticLockStockFacade;
+    private final PessimisticLockOrderFacade pessimisticLockOrderFacade;
 
     // 주문하기
+//    @PostMapping
+//    public ResponseEntity<ResultDto<Void>> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OrderRequestDto orderRequestDto) {
+//        CommonResponseDto<Object> commonResponseDto =
+//                orderService.createOrder(customUserDetails, orderRequestDto);
+//
+//         //orderLockService.createOrder(customUserDetails, orderRequestDto);
+//
+//        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
+//
+//        return ResponseEntity.status(commonResponseDto.getHttpStatus())
+//                             .body(resultDto);
+//    }
+
     @PostMapping
-    public ResponseEntity<ResultDto<Void>> createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OrderRequestDto orderRequestDto) {
-        CommonResponseDto<Object> commonResponseDto =
-                //orderService.createOrder(customUserDetails, orderRequestDto);
-
-         orderLockService.createOrder(customUserDetails, orderRequestDto);
-
-        ResultDto<Void> resultDto = ResultDto.in(commonResponseDto.getStatus(), commonResponseDto.getMessage());
-
-        return ResponseEntity.status(commonResponseDto.getHttpStatus())
-                             .body(resultDto);
+    public void createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OrderRequestDto orderRequestDto) throws Exception {
+        //redissonLockStockFacade.decrease(customUserDetails, orderRequestDto);
+       // optimisticLockStockFacade.decrease(customUserDetails,orderRequestDto);
+        pessimisticLockOrderFacade.processOrder(customUserDetails,orderRequestDto);
     }
 
     // 주문 조회

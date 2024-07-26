@@ -7,13 +7,8 @@ import org.dessert.moah.common.type.ErrorCode;
 import org.dessert.moah.item.entity.DessertItem;
 import org.dessert.moah.item.entity.Stock;
 import org.dessert.moah.item.repository.StockRepository;
-import org.hibernate.StaleObjectStateException;
-import org.springframework.dao.ConcurrencyFailureException;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -21,28 +16,56 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StockLockService {
     private final StockRepository stockRepository;
-    private final RedisTemplate<String, Object> redisTemplate;
+
+/*
+    @Transactional
+    public void decreaseStock(Stock stock, int amount, DessertItem dessertItem) {
+
+        log.info("재고 감소 시도: stockId={}, 감소량={}", stock.getId(), amount);
+        stock.decreaseStock(amount, dessertItem);
+        stockRepository.saveAndFlush(stock);
+
+//        log.info("재고 감소 완료: stockId={}, 감소량={}, 남은 재고={}", stock.getId(), amount, stock.getStockAmount());
+    }*/
+
+
+
 
 
     @Transactional
-    @Retryable(
-            value = {ConcurrencyFailureException.class, StaleObjectStateException.class},
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 100)
-    )
-    public void decreaseStock(Stock stock, int amount , DessertItem dessertItem) {
-/*        Stock stockForLock = stockRepository.findByStockIdWithPessimisticLock(stock.getId())
+    public Stock getStock(Long stockId) {
+        // 낙관적락 적용
+        Stock stock = stockRepository.findByStockIdWithLock(stockId)
+                                     .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
+
+        // 비관적락 적용
+/*        Stock stock = stockRepository.findByStockIdWithPessimisticLock(stockId)
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));*/
+        return stock;
+    }
 
-        Stock stockForLock = stockRepository.findByStockIdWithLock(stock.getId())
-                                            .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
-        log.info("재고 감소 시도: stockId={}, 감소량={}", stockForLock.getId(), amount);
-        stockForLock.decreaseStock(amount , dessertItem);
-        stockRepository.save(stockForLock);
+    @Transactional(propagation = Propagation.REQUIRED) // 이 메소드 호출 시 상위 트랜잭션을 이어 받음
+    public Stock decreaseStock(Long stockId, int amount, DessertItem dessertItem) {
+        // 비관적 락을 사용하여 재고를 가져옴
+        Stock stock = stockRepository.findByStockIdWithLock(stockId)
+                                     .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
 
-        log.info("재고 감소 완료: stockId={}, 감소량={}, 남은 재고={}", stockForLock.getId(), amount, stockForLock.getStockAmount());
+        stock.decreaseStock(amount, dessertItem);
+
+
+        return stockRepository.saveAndFlush(stock);
+    }
+
+    @Transactional // 10초 타임아웃 설정
+    public Stock getStockWithPessimisticLock(Long stockId) {
+        return stockRepository.findByStockIdWithLock(stockId)
+                              .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
+
     }
 
 
-
+    public void saveStock(Stock stock, int amount, DessertItem dessertItem) {
+        stock.decreaseStock(amount, dessertItem);
+        stockRepository.saveAndFlush(stock);
+    }
 }

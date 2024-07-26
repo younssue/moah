@@ -35,7 +35,7 @@ public class StockLockService {
     @Transactional
     public Stock getStock(Long stockId) {
         // 낙관적락 적용
-        Stock stock = stockRepository.findByStockIdWithLock(stockId)
+        Stock stock = stockRepository.findByStockIdWithPessimisticLock(stockId)
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
 
         // 비관적락 적용
@@ -47,7 +47,7 @@ public class StockLockService {
     @Transactional(propagation = Propagation.REQUIRED) // 이 메소드 호출 시 상위 트랜잭션을 이어 받음
     public Stock decreaseStock(Long stockId, int amount, DessertItem dessertItem) {
         // 비관적 락을 사용하여 재고를 가져옴
-        Stock stock = stockRepository.findByStockIdWithLock(stockId)
+        Stock stock = stockRepository.findByStockIdWithPessimisticLock(stockId)
                                      .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
 
         stock.decreaseStock(amount, dessertItem);
@@ -58,7 +58,7 @@ public class StockLockService {
 
     @Transactional // 10초 타임아웃 설정
     public Stock getStockWithPessimisticLock(Long stockId) {
-        return stockRepository.findByStockIdWithLock(stockId)
+        return stockRepository.findByStockIdWithPessimisticLock(stockId)
                               .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
 
     }

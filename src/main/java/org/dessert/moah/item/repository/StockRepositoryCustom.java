@@ -5,5 +5,5 @@ import org.dessert.moah.item.entity.Stock;
 import java.util.Optional;
 
 public interface StockRepositoryCustom {
-    //Optional<Stock> findByStockIdWithLock(Long stockId);
+    Optional<Stock> findByStockIdWithPessimisticLock(Long stockId);
 }

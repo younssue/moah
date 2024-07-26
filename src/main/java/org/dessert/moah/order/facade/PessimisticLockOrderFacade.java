@@ -45,7 +45,7 @@ public class PessimisticLockOrderFacade {
 
 
 
-    /*@Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void processOrder(CustomUserDetails userDetails, OrderRequestDto orderDto) throws Exception {
 //        try {
         // 유저 확인 및 상품 확인
@@ -63,12 +63,9 @@ public class PessimisticLockOrderFacade {
 
         System.out.println("정상 저장 완료: " + stock.getStockAmount());
 
-//            stockRepository.saveAndFlush(stock);
-//            Stock stock= stockLockService.getStockWithPessimisticLock(item.getStock().getId());
-//            stockLockService.saveStock(stock, orderDto.getCount(), item);
 
-        // 주문 생성
-//            orderLockService.createOrder(user, item, orderDto);
+
+
         // 주문 항목 생성
         OrderItem orderItem = OrderItem.builder()
                                        .orderPrice(item.getPrice())
@@ -90,17 +87,15 @@ public class PessimisticLockOrderFacade {
         order.addOrderItem(orderItem);
         orderRepository.save(order);
 
-        // 재고 감소
-*//*
-            Stock stock = stockLockService.decreaseStock(item.getStock().getId(), orderDto.getCount(), item);
-*//*
+
+
 
 
 
 //        } catch (Exception e) {
 //            throw new Exception("Order processing failed", e);
 //        }
-    }*/
+    }
 
 
 
@@ -160,7 +155,7 @@ public class PessimisticLockOrderFacade {
         }
     }*/
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    /*@Transactional(isolation = Isolation.SERIALIZABLE)
     public void processOrderWithRetry(CustomUserDetails userDetails, OrderRequestDto orderDto) throws Exception {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         int retryCount = 5;  // 재시도 횟수
@@ -212,7 +207,7 @@ public class PessimisticLockOrderFacade {
         orderItemRepository.save(orderItem);
         order.addOrderItem(orderItem);
         orderRepository.save(order);
-    }
+    }*/
 
 
 

@@ -44,7 +44,7 @@ public class OrderController {
     public void createOrder(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody OrderRequestDto orderRequestDto) throws Exception {
         //redissonLockStockFacade.decrease(customUserDetails, orderRequestDto);
        // optimisticLockStockFacade.decrease(customUserDetails,orderRequestDto);
-        pessimisticLockOrderFacade.processOrder(customUserDetails,orderRequestDto);
+         pessimisticLockOrderFacade.processOrder(customUserDetails,orderRequestDto);
     }
 
     // 주문 조회

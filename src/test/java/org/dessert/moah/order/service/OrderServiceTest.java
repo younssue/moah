@@ -5,9 +5,6 @@ import org.dessert.moah.common.exception.NotFoundException;
 import org.dessert.moah.common.jwt.JWTUtil;
 import org.dessert.moah.common.service.CommonService;
 import org.dessert.moah.common.type.ErrorCode;
-import org.dessert.moah.common.type.SuccessCode;
-import org.dessert.moah.item.entity.DessertItemImage;
-import org.dessert.moah.item.repository.DessertItemImageRepository;
 import org.dessert.moah.item.repository.StockRepository;
 import org.dessert.moah.item.type.DessertType;
 import org.dessert.moah.item.type.SaleStatus;
@@ -16,7 +13,6 @@ import org.dessert.moah.order.dto.OrderRequestDto;
 import org.dessert.moah.item.entity.DessertItem;
 import org.dessert.moah.item.entity.Stock;
 import org.dessert.moah.user.entity.Users;
-import org.dessert.moah.common.exception.OutOfStockException;
 import org.dessert.moah.item.repository.DessertItemRepository;
 import org.dessert.moah.order.repository.OrderItemRepository;
 import org.dessert.moah.order.repository.OrderRepository;
@@ -26,7 +22,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,7 +35,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.dessert.moah.user.type.UserRoleEnum.USER;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -343,7 +337,7 @@ public class OrderServiceTest {
         executorService.shutdown();
 
         // 여기서 각 스레드가 종료된 후, 재고 상태를 확인
-        Stock updatedStock = stockRepository.findByStockIdWithLock(stock.getId())
+        Stock updatedStock = stockRepository.findByStockIdWithPessimisticLock(stock.getId())
                                             .orElseThrow(() -> new NotFoundException(ErrorCode.OUT_OF_STOCK));
         assertEquals(0, updatedStock.getStockAmount());
     }

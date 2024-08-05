@@ -23,8 +23,8 @@ public class JWTUtil {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key()
                                                                                                   .build()
                                                                                                   .getAlgorithm());
-        logger.info("Secret Key: {}", Base64.getEncoder()
-                                            .encodeToString(secretKey.getEncoded()));
+//        logger.info("Secret Key: {}", Base64.getEncoder()
+//                                            .encodeToString(secretKey.getEncoded()));
 
 
     }

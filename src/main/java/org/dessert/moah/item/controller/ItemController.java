@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ItemController {
     private final ItemService itemService;
 
+
     // 전체 리스트 조회
     @GetMapping
     public ResponseEntity<ResultDto<ItemResponseListDto>> getItemList(@RequestParam int page,@RequestParam int size){

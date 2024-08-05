@@ -2,6 +2,7 @@ package org.dessert.moah.order.facade;
 
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.common.exception.NotFoundException;
+import org.dessert.moah.item.dto.DessertDto;
 import org.springframework.dao.CannotAcquireLockException;
 import org.dessert.moah.common.type.ErrorCode;
 import org.dessert.moah.item.entity.DessertItem;
@@ -44,21 +45,21 @@ public class PessimisticLockOrderFacade {
     private final OrderRepository orderRepository;
 
 
-
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional
+    // @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void processOrder(CustomUserDetails userDetails, OrderRequestDto orderDto) throws Exception {
 //        try {
         // 유저 확인 및 상품 확인
         Users user = userRepository.findByEmail(userDetails.getEmail())
                                    .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
-        DessertItem item = dessertItemRepository.findById(orderDto.getDessertId())
+        DessertDto dessertDto = dessertItemRepository.findDessertItemByPessimisticLock(orderDto.getDessertId())
                                                 .orElseThrow(() -> new NotFoundException(ErrorCode.ITEM_NOT_FOUND));
 
-        Stock stock = stockRepository.findByStockIdWithPessimisticLock(item.getStock()
-                                                                           .getId()).get();
-        System.out.println("stock 락 실행: " + stock.getId());
+       // Stock stock = stockRepository.findByStockIdWithPessimisticLock(item.getStock().getId()).get();
+        Stock stock = dessertDto.stock();
+        System.out.println("stock 락 실행: " + dessertDto.stock().getId());
 
-        stock.decreaseStock(orderDto.getCount(), item);
+        stock.decreaseStock(orderDto.getCount(), dessertDto.dessertItem());
         stockRepository.saveAndFlush(stock);
 
         System.out.println("정상 저장 완료: " + stock.getStockAmount());
@@ -68,9 +69,9 @@ public class PessimisticLockOrderFacade {
 
         // 주문 항목 생성
         OrderItem orderItem = OrderItem.builder()
-                                       .orderPrice(item.getPrice())
+                                       .orderPrice(dessertDto.dessertItem().getPrice())
                                        .count(orderDto.getCount())
-                                       .dessertItem(item)
+                                       .dessertItem(dessertDto.dessertItem())
                                        .build();
 
         // 주문 생성

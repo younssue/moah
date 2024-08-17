@@ -96,7 +96,7 @@
 
 ## 📙 프로젝트 아키텍처 
 
-- 배포 후 추가 예정
+![image](https://velog.velcdn.com/images/younssue/post/e30cc8f5-ae47-42b6-b45d-9cee7ecfb300/image.png)
 
 <br>
 

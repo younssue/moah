@@ -103,20 +103,72 @@
 ## 🐛 트러블 슈팅
 <br>
 
-- 낙관적락 충돌 **StaleObjectStateException** 오류
-<br>
+1. **재고 감소에 따른 동시성 문제 해결**
 
-  ![image](https://github.com/user-attachments/assets/902b7b5d-8840-40bf-9121-9c9e0d55d3f1)
+- 프로젝트의 핵심 기능 중 하나인 재고 관리 시스템에서, 동시에 여러 주문이 발생할 때 재고가 정확히 감소하지 않는 **동시성 문제**와 **데이터 일관성 문제**가 발생
+- 초기 테스트에서 100개의 재고에 대해 100건의 주문을 처리하는 동안 일부 재고가 남는 현상이 발견됨 (예상 남은 재고: 0, 실제 남은 재고: 2)
+
+- **문제점:** 연관된 엔티티를 조회할 때 두 번의 ```SELECT``` 쿼리가 발생하면서 데이터베이스에서 트랜잭션 격리 수준을 제대로 관리하지 못해,
+  동시에 여러 트랜잭션이 동일한 데이터를 수정하려고 하거나, 업데이트가 잘못 처리되는 상황이 발생 -> 여러 스레드가 동시에 동일한 재고 정보를 조회하고 수정하는 과정에서 **데이터 일관성** 문제가 발생
+
+```java
+Hibernate: 
+    select
+        s1_0.stock_id,
+        di1_0.dessert_id,
+        di1_0.contents,
+        di1_0.created_at,
+        di1_0.deleted_at,
+        di1_0.dessert_name,
+        di1_0.dessert_type,
+        di1_0.price,
+        di1_0.sale_status,
+        di1_0.updated_at,
+        s1_0.sell_amount,
+        s1_0.stock_amount 
+    from
+        stock s1_0 
+    left join
+        dessert_item di1_0 
+            on di1_0.dessert_id=s1_0.dessert_id 
+    where
+        s1_0.dessert_id=?
+Hibernate: 
+    select
+        s1_0.stock_id,
+        s1_0.dessert_id,
+        s1_0.sell_amount,
+        s1_0.stock_amount 
+    from
+        stock s1_0 
+    where
+        s1_0.stock_id=? for update
+```
+
+- **해결:** 재고와 상품 정보를 한 번에 조회하는 **통합 쿼리**를 작성하고, **비관적 락(Pessimistic Lock)**을 적용하여 동시성 문제를 해결
+```java
+@Override
+    public Optional<DessertDto> findDessertItemByPessimisticLock(Long dessertId) {
+        QDessertItem qDessertItem = QDessertItem.dessertItem;
+        QStock qstock = QStock.stock;
 
 
-  ![image](https://github.com/user-attachments/assets/24e1e87b-3c08-4d8d-b8b3-824bbfba7d3b)
+        DessertDto result = queryFactory.select(Projections.constructor(DessertDto.class,
+                                                qDessertItem, qstock))
+                                        .from(qDessertItem)
+                                        .join(qDessertItem.stock, qstock).fetchJoin()
+                                        .where(qDessertItem.id.eq(dessertId))
+                                        .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                                        .fetchOne();
 
-   
-- 낙관적락 충돌 오류로 재고가 남아있는 상태에도 감소가 되지 않는 현상이 발생
-      
+        return Optional.ofNullable(result);
 
--> [Facade 패턴을 사용하여 트랜잭션 시점을 변경하여 해결](https://velog.io/@younssue/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85-%EB%82%99%EA%B4%80%EC%A0%81%EB%9D%BD-%EC%9E%AC%EA%B3%A0-%EA%B0%90%EC%86%8C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0) 
 
+    }
+```
+    - 통합 쿼리를 사용해 재고 정보를 ```fetch join``` 으로 조회하는 동시에 비관적 락을 걸어, 여러 스레드가 동일한 재고 항목에 동시에 접근하지 못하도록 방지
+    - 이를 통해 재고 감소 처리의 데이터 일관성을 확보하고, 동시에 발생하는 다수의 주문에 대해 정확한 재고 관리를 구현
+    - 통합 쿼리 적용 후 테스트 결과, 100개의 재고에 대해 100건의 주문이 들어왔을 때 남은 재고가 0개로 정확히 처리됨
 
 
 
@@ -124,8 +176,21 @@
 
 ## 🕶️ 성능 최적화 
 
+1. **Redisson의 Pub/Sub 분산락 도입으로 CPU 사용량 감소**
+- **문제점:** 비관적 락 사용 시 데이터베이스 CPU 사용량이 높아지는 성능 저하 발생
+- **해결:** 비관적 락의 성능 문제를 해결하기 위해 **Redisson의 Pub/Sub 분산락**을 도입
+    - Redisson을 사용하여 락을 획득하고 트랜잭션을 처리한 후 락을 해제 , 데이터베이스 부하를 줄임
+    - 성능 테스트 결과, 데이터베이스 CPU 사용량이 비관적 락에 비해 절반으로 감소
+        - 비관적 락 사용 시 데이터베이스 CPU 사용량: 40.89%
+        - Redisson 분산락 사용 시 데이터베이스 CPU 사용량: 23.55% ⇒ 비관적락보다 대략 **17% 감소**
 
 
+2. **비동기 이미지 업로드를 통한 속도 개선**
+- **문제점:**  동기 방식의 이미지 업로드로 인한 응답 지연
+    - 이미지 업로드를 동기 방식으로 처리하면서 서버의 응답 속도가 느려졌고, 특히 다중 이미지 업로드 시 전체 트랜잭션의 완료 시간이 길어지는 문제가 발생 , 평균적으로 이미지 업로드 처리에 1447ms로 느린 응답 속도
+
+- 해결: **비동기 이미지 업로드 처리 도입**
+    - Spring Boot의 `@Async`와 `CompletableFuture`를 활용하여 이미지 업로드를 비동기 방식으로 전환 →  이미지 업로드 시간이 **1447ms에서 47ms**로 **약 30배** 단축되어, 전체 트랜잭션 속도가 크게 개선됨
 
 
 

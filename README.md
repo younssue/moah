@@ -148,7 +148,7 @@ Hibernate:
 <br>
 
 
-- **해결:** 재고와 상품 정보를 한 번에 조회하는 **통합 쿼리**를 작성하고, **비관적 락(Pessimistic Lock)**을 적용하여 동시성 문제를 해결
+- **해결:** 재고와 상품 정보를 한 번에 조회하는 **통합 쿼리**를 작성하고, **비관적 락(Pessimistic Lock)** 을 적용하여 동시성 문제를 해결
 ```java
 @Override
     public Optional<DessertDto> findDessertItemByPessimisticLock(Long dessertId) {
@@ -192,11 +192,12 @@ Hibernate:
 2. **비동기 이미지 업로드를 통한 속도 개선**
 - **문제점:**  동기 방식의 이미지 업로드로 인한 응답 지연
     - 이미지 업로드를 동기 방식으로 처리하면서 서버의 응답 속도가 느려졌고, 특히 다중 이미지 업로드 시 전체 트랜잭션의 완료 시간이 길어지는 문제가 발생 , 평균적으로 이미지 업로드 처리에 1447ms로 느린 응답 속도
+![image](https://velog.velcdn.com/images/younssue/post/8ac32990-df92-44a6-a013-a2ec22774749/image.png)
 
 - 해결: **비동기 이미지 업로드 처리 도입**
     - Spring Boot의 `@Async`와 `CompletableFuture`를 활용하여 이미지 업로드를 비동기 방식으로 전환 →  이미지 업로드 시간이 **1447ms에서 47ms**로 **약 30배** 단축되어, 전체 트랜잭션 속도가 크게 개선됨
 
-
+![image](https://velog.velcdn.com/images/younssue/post/662099b4-39d4-4131-80f5-89759b2dd19a/image.png)
 
 
 

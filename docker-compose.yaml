@@ -4,13 +4,15 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     ports:
-      - "8080:8080"
+      - "9090:8080"
     depends_on:
       - db
     env_file:
       - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
     networks:
       - app-network
 
@@ -19,6 +21,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3307:3306"
     volumes:

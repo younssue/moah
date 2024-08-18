@@ -38,3 +38,7 @@ out/
 
 ### 환경 설정 파일 ###
 .env
+
+## Q클래스 파일 ##
+/build/generated/
+

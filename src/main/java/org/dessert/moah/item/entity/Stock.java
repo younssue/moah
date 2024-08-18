@@ -38,7 +38,6 @@ public class Stock  {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dessert_id")
     @JsonBackReference
-    @JsonIgnore
     private DessertItem dessertItem;
 
 

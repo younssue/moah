@@ -45,7 +45,12 @@ public class DessertItem extends BaseTime /*implements Serializable*/ {
     private Stock stock;
 
     @OneToMany(mappedBy = "dessertItem", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<DessertItemImage> dessertItemImages = new ArrayList<>();
+
+/*    @OneToOne(mappedBy = "dessertItem", fetch = FetchType.LAZY , optional = false ,cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private DessertItemImage dessertItemImage;*/
 
     @Builder
     public DessertItem(String dessertName, String contents, int price, SaleStatus saleStatus, DessertType dessertType, Stock stock) {

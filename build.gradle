@@ -72,6 +72,9 @@ dependencies {
     // redisson
     implementation group: 'org.redisson', name: 'redisson', version: '3.27.2'
 
+    // AWS
+    implementation 'io.awspring.cloud:spring-cloud-aws-s3:3.0.2'
+
 
 }
 

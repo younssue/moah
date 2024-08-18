@@ -1,5 +1,6 @@
 package org.dessert.moah.item.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,9 @@ public class DessertItemImage {
     private String img_url;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    //@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dessert_id")
+    @JsonBackReference
     private DessertItem dessertItem;
 
     @Builder

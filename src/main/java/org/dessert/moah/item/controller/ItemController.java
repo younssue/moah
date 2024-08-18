@@ -3,19 +3,27 @@ package org.dessert.moah.item.controller;
 import lombok.RequiredArgsConstructor;
 import org.dessert.moah.common.dto.CommonResponseDto;
 import org.dessert.moah.common.dto.ResultDto;
-import org.dessert.moah.item.dto.ItemResponseDto;
-import org.dessert.moah.item.dto.ItemResponseListDto;
-import org.dessert.moah.item.dto.RemainStockDto;
-import org.dessert.moah.item.dto.StockDto;
+import org.dessert.moah.item.dto.*;
+import org.dessert.moah.item.entity.DessertItem;
+import org.dessert.moah.item.entity.Stock;
 import org.dessert.moah.item.service.ItemService;
+import org.dessert.moah.item.type.DessertType;
+import org.dessert.moah.item.type.SaleStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/moah/items")
 public class ItemController {
     private final ItemService itemService;
+
 
     // 전체 리스트 조회
     @GetMapping
@@ -45,5 +53,16 @@ public class ItemController {
         resultDto.setData((RemainStockDto) commonResponseDto.getData());
 
         return ResponseEntity.status(commonResponseDto.getHttpStatus()).body(resultDto);
+    }
+
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<String> saveDessertItem(
+            @RequestPart("data") ItemRequestDto2 dessertDto,
+            @RequestPart("file") List<MultipartFile> images) throws IOException, ExecutionException, InterruptedException {
+
+
+
+        itemService.saveDessertItem(dessertDto, images);
+        return ResponseEntity.ok("상품 등록이 성공했습니다");
     }
 }

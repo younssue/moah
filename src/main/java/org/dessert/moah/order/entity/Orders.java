@@ -35,11 +35,11 @@ public class Orders {
     private String deliveryAddress;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Users users;
 
-    @OneToMany(mappedBy = "orders")
+    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Builder
